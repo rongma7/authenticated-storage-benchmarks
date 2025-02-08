@@ -1,10 +1,10 @@
 use super::profiler::Profiler;
 use asb_options::Options;
-use authdb::AuthDB;
+// use authdb::AuthDB;
 
-use kvdb::IoStatsKind;
+// use kvdb::IoStatsKind;
 use lazy_static::lazy_static;
-use num_format::{Locale, WriteFormatted};
+// use num_format::{Locale, WriteFormatted};
 #[cfg(any(target_os = "linux", target_os = "windows"))]
 use simple_process_stats::ProcessStats;
 use std::fs;
@@ -92,14 +92,14 @@ impl<'a> Reporter<'a> {
         epoch: usize,
         read_count: usize,
         write_count: usize,
-        db: &dyn AuthDB,
+        // db: &dyn AuthDB,
         opts: &Options,
     ) {
-        fn c(n: u64) -> String {
-            let mut ans = String::new();
-            ans.write_formatted(&n, &Locale::en).unwrap();
-            ans
-        }
+        // fn c(n: u64) -> String {
+        //     let mut ans = String::new();
+        //     ans.write_formatted(&n, &Locale::en).unwrap();
+        //     ans
+        // }
 
         self.total_read_count += read_count;
         self.total_write_count += write_count;
@@ -114,14 +114,14 @@ impl<'a> Reporter<'a> {
         let last = self.round_start_time.elapsed();
         let avg_time = last.as_secs_f64() / (read_count + write_count) as f64;
 
-        let common = format!(
-            "{:>6?}: {:>7.3?} s > {:>7} ops, {:>7.3?} us/op, {:>5} empty reads >",
-            epoch + 1,
-            self.start_time.elapsed().as_secs_f64(),
-            c((1f64 / avg_time) as u64),
-            avg_time * 1e6,
-            self.empty_reads,
-        );
+        // let common = format!(
+        //     "{:>6?}: {:>7.3?} s > {:>7} ops, {:>7.3?} us/op, {:>5} empty reads >",
+        //     epoch + 1,
+        //     self.start_time.elapsed().as_secs_f64(),
+        //     c((1f64 / avg_time) as u64),
+        //     avg_time * 1e6,
+        //     self.empty_reads,
+        // );
 
         if opts.stat_mem {
             RUNTIME.lock().unwrap().block_on(Self::report_mem());
@@ -142,30 +142,30 @@ impl<'a> Reporter<'a> {
         //         bytes_per_write,
         //     )
         // };
-        let (stdout, fileout) = {
-            if let Some(backend) = db.backend() {
-                let stats = backend.io_stats(IoStatsKind::SincePrevious);
-                let ra = stats.reads as f64 / (read_count as f64);
-                let wa = stats.writes as f64 / (write_count as f64);
-                (
-                    format!("Read amp {:>6.3}, Write amp {:>6.3} > ", ra, wa),
-                    format!("{},{}", ra, wa),
-                )
-            } else {
-                ("".into(), "".into())
-            }
-        };
-        let customized = self.counter.report();
-        println!("{} {} {}", common, stdout, customized);
+        // let (stdout, fileout) = {
+        //     if let Some(backend) = db.backend() {
+        //         let stats = backend.io_stats(IoStatsKind::SincePrevious);
+        //         let ra = stats.reads as f64 / (read_count as f64);
+        //         let wa = stats.writes as f64 / (write_count as f64);
+        //         (
+        //             format!("Read amp {:>6.3}, Write amp {:>6.3} > ", ra, wa),
+        //             format!("{},{}", ra, wa),
+        //         )
+        //     } else {
+        //         ("".into(), "".into())
+        //     }
+        // };
+        // let customized = self.counter.report();
+        // println!("{} {} {}", common, stdout, customized);
 
         if let Some(file) = &mut self.log_file {
             let _ = writeln!(
                 file,
-                "{},{},{:.3?},{}",
+                "{},{},{:.3?}",
                 self.opts.settings(),
                 (epoch + 1) / self.opts.report_epoch,
                 avg_time * 1e6,
-                fileout
+                // fileout
             );
         }
         self.empty_reads = 0;

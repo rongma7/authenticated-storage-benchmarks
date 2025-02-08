@@ -340,8 +340,6 @@ name = "asb-profile"
 version = "0.1.0"
 dependencies = [
  "asb-options",
- "authdb-trait",
- "kvdb",
  "lazy_static",
  "num-format",
  "pprof",

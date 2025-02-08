@@ -112,7 +112,7 @@ pub fn run_tasks(
         }
         db.commit(epoch);
 
-        reporter.notify_epoch(epoch, read_count, write_count, &*db, opts);
+        reporter.notify_epoch(epoch, read_count, write_count, opts);
     }
 
     reporter.collect_profiling(profiler);

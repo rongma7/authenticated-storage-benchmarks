@@ -7,10 +7,10 @@ edition = "2021"
 
 [dependencies]
 pprof = { version = "0.3", features = ["flamegraph", "protobuf"] }
-kvdb = { workspace = true }
+#kvdb = { workspace = true }
 asb-options = { workspace = true }
 lazy_static = { workspace = true }
 tokio = { workspace = true }
-authdb = { workspace = true }
+#authdb = { workspace = true }
 num-format = "0.4.0"
 simple-process-stats = "0.1.0"
