@@ -34,6 +34,9 @@ pub struct Options {
     #[structopt(long, default_value = "100")]
     pub profile_epoch: usize,
 
+    #[structopt(long, default_value = "10")]
+    pub commit_epoch: usize,
+
     #[structopt(long, default_value = "50000")]
     pub epoch_size: usize,
 
