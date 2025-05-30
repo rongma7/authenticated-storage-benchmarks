@@ -4,7 +4,7 @@ use rand::prelude::*;
 use std::{
     marker::PhantomData,
     sync::mpsc::{sync_channel, Receiver},
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 pub struct ReadThenWrite<R: Rng + SeedableRng> {
@@ -54,7 +54,12 @@ impl ReadThenWriteTaskGenerator {
                     events.push(Event::Read(key.clone()));
                     events.push(Event::Write(key.clone(), random.gen::<[u8; 32]>().to_vec()));
                 }
+                let start = Instant::now();
                 let res = sender.send(Events(events));
+                let elapsed = start.elapsed();
+                if elapsed > Duration::from_millis(10) {
+                    eprintln!("Sender delay: {:?}", elapsed);
+                }
                 if res.is_err() {
                     return;
                 }
@@ -69,7 +74,10 @@ impl Iterator for ReadThenWriteTaskGenerator {
     type Item = Events;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let task = self.receiver.recv_timeout(Duration::from_secs(1)).unwrap();
+        let start = Instant::now();
+        let task = self.receiver.recv_timeout(Duration::from_secs(10)).unwrap();
+        let elapsed = start.elapsed();
+        eprintln!("Receiver delay: {:?}", elapsed);
         Some(task)
     }
 }
